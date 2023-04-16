@@ -27,8 +27,8 @@
                 v-for="(borderCountry, index) in country.borders"
                 :key="index"
               >
-                <router-link :to="`/list/${borderCountry}`">
-                  {{ borderCountry }}
+                <router-link :to="`/list/${borderCountry.alpha3Code}`">
+                  {{ borderCountry.name }}
                 </router-link>
               </li>
             </ul>
@@ -51,7 +51,6 @@ export default {
       country: {
         name: "",
         alpha2Code: "",
-        alpha3Code: "",
         capital: "",
         area: "",
         borders: [],
@@ -63,22 +62,35 @@ export default {
   },
   methods: {
     ...mapActions(CountriesStore, ["_fetchAllCountries"]),
+    
     // Filter the array of countries based on the country code
     _getCountryInfo(code) {
+      // Loop the countriesList array
       for (let i = 0; i < this.countriesList.length; i++) {
+
         if (this.countriesList[i].alpha3Code === code) {
-          const { name, alpha2Code, capital, area, borders } = this.countriesList[i]
+
+          const { name, alpha2Code, capital, area, borders } = this.countriesList[i];
+          // Data equivalence
           this.country.name = name.common;
           this.country.alpha2Code = alpha2Code;
           this.country.capital = capital.join(", ");
           this.country.area = area;
-          this.country.borders = borders;
+          // Borders equivalence
+          for(let y = 0; y < borders.length; y++){
+            this.country.borders.push({name: this._getCountryName(borders[y]), alpha3Code: borders[y]});
+          }
         }
       }
+      console.log(this.country.borders);
     },
-    // _getCountryName(code){
-      
-    // }
+    _getCountryName(code){
+      for(let i = 0; i < this.countriesList.length; i++){
+        if (this.countriesList[i].alpha3Code === code) {
+          return this.countriesList[i].name.common;
+        }
+      }
+    }
   },
   created() {
     // Get alpha3Code from params
