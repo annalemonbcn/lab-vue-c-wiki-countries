@@ -7,14 +7,16 @@ export default defineStore("countries", {
     };
   },
   actions: {
-    async _fetchCountries(){
-      const data = await fetch("https://ih-countries-api.herokuapp.com/countries");
+    async _fetchAllCountries() {
+      const data = await fetch(
+        "https://ih-countries-api.herokuapp.com/countries"
+      );
       const response = await data.json();
       this.countriesList = response;
       this._orderCountriesList();
-      console.log(this.countriesList);
+      // console.log(this.countriesList)
     },
-    _orderCountriesList(){
+    _orderCountriesList() {
       this.countriesList.sort((a, b) => {
         if (a.name.common < b.name.common) {
           return -1;
@@ -24,6 +26,6 @@ export default defineStore("countries", {
         }
         return 0;
       });
-    }
+    },
   },
 });
