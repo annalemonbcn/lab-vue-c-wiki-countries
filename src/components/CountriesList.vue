@@ -17,35 +17,24 @@
 </template>
 
 <script>
+import {mapState, mapActions } from 'pinia';
+import CountriesStore from '../stores/CountriesStore.js';
+
 export default {
   name: "CountriesList",
   data(){
     return{
-      countriesList: [],
+
     }
+  },
+  computed:{
+    ...mapState(CountriesStore, ['countriesList']),
   },
   methods: {
-    async _getCountriesList(){
-      const data = await fetch("https://ih-countries-api.herokuapp.com/countries");
-      const response = await data.json();
-      this.countriesList = response;
-      this._orderCountriesList();
-      console.log(this.countriesList);
-    },
-    _orderCountriesList(){
-      this.countriesList.sort((a, b) => {
-        if (a.name.common < b.name.common) {
-          return -1;
-        }
-        if (a.name.common > b.name.common) {
-          return 1;
-        }
-        return 0;
-      });
-    }
+    ...mapActions(CountriesStore, ['_fetchCountries']),
   },
-  mounted(){
-    this._getCountriesList();
+  created(){
+    this._fetchCountries();
   }
 };
 </script>
