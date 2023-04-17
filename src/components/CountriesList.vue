@@ -2,56 +2,52 @@
   <!-- Countries List (Bootstrap column) -->
   <div class="col-5" style="max-height: 90vh; overflow: scroll">
     <ul class="list-group">
-      <li class="li-country" v-for="(country, index) in countriesList" :key="index">
-        <router-link class="list-group-item list-group-item-action" :to="`/list/${country.alpha3Code}`">
-          <img :src="`https://flagpedia.net/data/flags/icon/72x54/${country.alpha2Code.toLowerCase()}.png`" />
+      <li
+        class="li-country"
+        v-for="(country, index) in countriesList"
+        :key="index"
+      >
+        <router-link
+          class="list-group-item list-group-item-action"
+          :to="`/list/${country.alpha3Code}`"
+        >
+          <img
+            :src="`https://flagpedia.net/data/flags/icon/72x54/${country.alpha2Code.toLowerCase()}.png`"
+          />
           <p>{{ country.name.common }}</p>
         </router-link>
       </li>
     </ul>
   </div>
 
-  <div class="col-7" style="max-height: 90vh;">
+  <div class="col-7" style="max-height: 90vh">
     <router-view />
   </div>
 </template>
 
 <script>
+import { mapState, mapActions } from "pinia";
+import CountriesStore from "../stores/CountriesStore.js";
+
 export default {
   name: "CountriesList",
-  data(){
-    return{
-      countriesList: [],
-    }
+  data() {
+    return {};
+  },
+  computed: {
+    ...mapState(CountriesStore, ["countriesList"]),
   },
   methods: {
-    async _getCountriesList(){
-      const data = await fetch("https://ih-countries-api.herokuapp.com/countries");
-      const response = await data.json();
-      this.countriesList = response;
-      this._orderCountriesList();
-      console.log(this.countriesList);
-    },
-    _orderCountriesList(){
-      this.countriesList.sort((a, b) => {
-        if (a.name.common < b.name.common) {
-          return -1;
-        }
-        if (a.name.common > b.name.common) {
-          return 1;
-        }
-        return 0;
-      });
-    }
+    ...mapActions(CountriesStore, ["_fetchAllCountries"]),
   },
-  mounted(){
-    this._getCountriesList();
-  }
+  created() {
+    this._fetchAllCountries();
+  },
 };
 </script>
 
 <style scoped>
-.li-country{
+.li-country {
   list-style: none;
 }
 </style>

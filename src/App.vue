@@ -22,7 +22,6 @@ import CountryDetails from "./components/CountryDetails.vue";
 
 export default {
   name: "App",
-  data() {},
   components: {
     Navbar,
     CountriesList,
