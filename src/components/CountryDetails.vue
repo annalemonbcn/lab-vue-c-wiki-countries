@@ -62,36 +62,29 @@ export default {
   methods: {
     // Filter the array of countries based on the country code
     _getCountryInfo(code) {
-      // Loop the countriesList array
-      for (let i = 0; i < this.countriesList.length; i++) {
-        if (this.countriesList[i].alpha3Code === code) {
-          const { name, alpha2Code, capital, area, borders } = this.countriesList[i];
+      // Find the country in the countriesList array via alpha3Code
+      const country = this.countriesList.find(country => country.alpha3Code === code);
 
-          // Data equivalence
-          this.country.name = name.common;
-          this.country.alpha2Code = alpha2Code;
-          this.country.capital = capital.join(", ");
-          this.country.area = area;
-          
-          // Borders
-          // Reset borders array
-          this.country.borders = [];
-          // Get name of each border
-          for (let y = 0; y < borders.length; y++) {
-            this.country.borders.push({
-              name: this._getCountryName(borders[y]),
-              alpha3Code: borders[y],
-            });
-          }
-        }
+      // Data equivalence
+      this.country.name = country.name.common;
+      this.country.alpha2Code = country.alpha2Code;
+      this.country.capital = country.capital.join(", ");
+      this.country.area = country.area;
+
+      /* Borders */
+      // Reset borders array
+      this.country.borders = [];
+      // Loop to get name of each border
+      for (let y = 0; y < country.borders.length; y++) {
+        this.country.borders.push({
+          name: this._getCountryName(country.borders[y]),
+          alpha3Code: country.borders[y],
+        });
       }
     },
     _getCountryName(code) {
-      for (let i = 0; i < this.countriesList.length; i++) {
-        if (this.countriesList[i].alpha3Code === code) {
-          return this.countriesList[i].name.common;
-        }
-      }
+      const country = this.countriesList.find(country => country.alpha3Code === code);
+      return country.name.common;
     },
   },
   created() {
