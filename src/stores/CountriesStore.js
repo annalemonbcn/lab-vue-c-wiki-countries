@@ -14,7 +14,6 @@ export default defineStore("countries", {
       const response = await data.json();
       this.countriesList = response;
       this._orderCountriesList();
-      // console.log(this.countriesList)
     },
     _orderCountriesList() {
       this.countriesList.sort((a, b) => {

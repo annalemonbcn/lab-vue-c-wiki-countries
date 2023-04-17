@@ -1,8 +1,7 @@
 <template>
   <!-- Country Details (Bootstrap column) -->
-  <div class="col-7">
+  <div class="col-7" v-if="country.alpha2Code !== ''">
     <img
-      v-if="country.alpha2Code !== ''"
       :src="`https://flagpedia.net/data/flags/w580/${country.alpha2Code.toLowerCase()}.png`"
       alt="country flag"
       style="width: 300px"
@@ -47,7 +46,7 @@ export default {
   name: "CountryDetails",
   data() {
     return {
-      countryCode: '',
+      countryCode: "",
       country: {
         name: "",
         alpha2Code: "",
@@ -61,36 +60,39 @@ export default {
     ...mapState(CountriesStore, ["countriesList"]),
   },
   methods: {
-    ...mapActions(CountriesStore, ["_fetchAllCountries"]),
-    
     // Filter the array of countries based on the country code
     _getCountryInfo(code) {
       // Loop the countriesList array
       for (let i = 0; i < this.countriesList.length; i++) {
-
         if (this.countriesList[i].alpha3Code === code) {
-
           const { name, alpha2Code, capital, area, borders } = this.countriesList[i];
+
           // Data equivalence
           this.country.name = name.common;
           this.country.alpha2Code = alpha2Code;
           this.country.capital = capital.join(", ");
           this.country.area = area;
-          // Borders equivalence
-          for(let y = 0; y < borders.length; y++){
-            this.country.borders.push({name: this._getCountryName(borders[y]), alpha3Code: borders[y]});
+          
+          // Borders
+          // Reset borders array
+          this.country.borders = [];
+          // Get name of each border
+          for (let y = 0; y < borders.length; y++) {
+            this.country.borders.push({
+              name: this._getCountryName(borders[y]),
+              alpha3Code: borders[y],
+            });
           }
         }
       }
-      console.log(this.country.borders);
     },
-    _getCountryName(code){
-      for(let i = 0; i < this.countriesList.length; i++){
+    _getCountryName(code) {
+      for (let i = 0; i < this.countriesList.length; i++) {
         if (this.countriesList[i].alpha3Code === code) {
           return this.countriesList[i].name.common;
         }
       }
-    }
+    },
   },
   created() {
     // Get alpha3Code from params
